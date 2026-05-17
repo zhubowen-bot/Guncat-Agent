@@ -2,7 +2,7 @@
 
 > 结构化思维链 × 多 Agent 协同 × 60+ 工具生态 —— 新一代大模型智能体
 
-[Guncat-Agent官网](https://guncat-agent.space-z.ai/) 
+[Guncat-Agent官网](https://guncat-agent.space-z.ai/) | [GitHub](https://github.com/Guncat-Agent/Guncat-Agent)
 
 ---
 
@@ -15,6 +15,38 @@ Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
 | **Guncat 2.0 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)                     | Agent集群 | prompt开源 |
 | **Guncat 2.5 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)                     | 基础工具    | prompt开源 |
 | **Guncat 2.5-Pro** | Python 代码驱动 | python可移植，服务部署在Coze | API调用（Coze默认doubao-seed-2.0-Pro） | **60+** | 全项目开源    |
+
+---
+
+## 项目结构
+
+```
+Guncat-Agent/
+├── Guncat 2.0/                    # Prompt驱动版本
+│   ├── Guncat 2.0-flash-main_agent_prompt.md
+│   └── Guncat 2.0-pro-main_agent_prompt.md
+├── Guncat 2.5/                    # Sequential Thinking版本
+│   ├── Guncat 2.5-lite_prompt.md
+│   └── Guncat 2.5-max_prompt.md
+├── Guncat 2.5-Pro-Project/        # Python代码驱动版本
+│   ├── assets/                    # 静态资源
+│   ├── config/                    # 配置文件
+│   ├── scripts/                   # 运行脚本
+│   ├── src/                       # 源代码
+│   │   ├── agents/                # Agent实现
+│   │   ├── graphs/                # LangGraph工作流
+│   │   ├── storage/               # 存储层
+│   │   ├── tools/                 # 工具集
+│   │   ├── utils/                 # 工具函数
+│   │   └── main.py                # 入口文件
+│   ├── .coze                      # Coze配置
+│   ├── .gitignore
+│   ├── pyproject.toml             # 依赖配置
+│   ├── README.md
+│   └── uv.lock
+├── LICENSE
+└── README.md
+```
 
 ---
 
@@ -40,17 +72,17 @@ Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
 
 ---
 
-## Guncat 2.5 系列 - Sequential Thinking 思维链 和 全新工具调用
+## Guncat 2.5 系列 - Sequential Thinking 思维链
 
-基于 Prompt 驱动，创新搭载 **Sequential Thinking** 结构化思维链与多 Agent 协同架构，重构工具调用逻辑，全部由单Agent调用工具完成任务，以更少时间交付更高质量。
+基于 Prompt 驱动，创新搭载 **Sequential Thinking** 结构化思维链与多 Agent 协同架构。
 
-**核心升级**
+### 核心升级
 
-结构化思维链
+**结构化思维链**
 
 引入 Sequential Thinking 和任务 list，大幅提高多轮工具调用特别是快速模式下的稳定性、可视性、结构性和连续性。2.5 的 Sequential Thinking 让复杂任务的推理过程更加透明、可控。
 
-全新提示词架构
+**全新提示词架构**
 
 2.5 版本完整描述工具的输入和输出参数，给出细致的输入规范，但不限制模型何时调用工具。相比 2.0 只列出工具并规定调用条件，反而更有利于模型的工具调用效率和准确性。
 
@@ -85,14 +117,14 @@ Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
 
 ### 工具生态
 
-| 领域   | 工具数量 |
-| ---- | ---- |
-| 图片处理 | 9    |
-| 视频处理 | 11   |
-| 网页内容 | 8    |
-| 文档处理 | 11   |
-| 搜索服务 | 9    |
-| 代码执行 | 12   |
+| 领域   | 工具数量 | 工具列表 |
+| ---- | ---- | ---- |
+| 图片处理 | 9    | generate_image, image_understanding, extract_text_from_image, analyze_chart, compare_images, detect_objects, remove_watermark, enhance_image, style_transfer |
+| 视频处理 | 11   | generate_video, trim_video, concat_videos, extract_key_frames, extract_frames_by_interval, extract_audio, add_subtitles, auto_subtitle, analyze_video, extract_video_frames_count, combine_video_audio |
+| 网页内容 | 8    | fetch_webpage, extract_text_from_url, extract_images_from_url, extract_links_from_url, analyze_article, convert_url_to_markdown, summarize_article, compare_articles |
+| 文档处理 | 11   | create_pdf, create_docx, create_pptx, create_excel, translate_text, summarize_document, qa_document, extract_table_from_document, create_report, convert_document_format, proofread_document |
+| 搜索服务 | 9    | web_search, web_search_with_ai_summary, image_search, search_news, academic_search, verify_information, get_knowledge_answer, compare_products, get_trending_topics |
+| 代码执行 | 12   | execute_python_code, calculate, generate_chart, parse_json, format_json, convert_data_format, generate_mindmap, analyze_data, generate_code, debug_code, explain_code, validate_json_schema |
 
 ### 核心升级
 
@@ -100,6 +132,37 @@ Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
 - **LangGraph 生态**：支持复杂工作流编排、状态管理和多 Agent 协作
 - **60+ 专业工具**：覆盖六大领域，数量与质量质的飞跃
 - **速度 4x**：复杂任务速度约为 2.0-flash 的 4 倍
+
+### 本地开发
+
+```bash
+# 进入项目目录
+cd "Guncat 2.5-Pro-Project"
+
+# 安装依赖（使用 uv）
+uv sync
+
+# 本地运行工作流
+bash scripts/local_run.sh -m flow
+
+# 运行指定节点
+bash scripts/local_run.sh -m node -n node_name
+
+# 启动 HTTP 服务
+bash scripts/http_run.sh -m http -p 5000
+```
+
+### API 接口
+
+| 接口 | 方法 | 描述 |
+| ---- | ---- | ---- |
+| `/run` | POST | 同步执行工作流 |
+| `/stream_run` | POST | 流式执行工作流（SSE） |
+| `/cancel/{run_id}` | POST | 取消指定任务 |
+| `/node_run/{node_id}` | POST | 运行指定节点 |
+| `/v1/chat/completions` | POST | OpenAI 兼容接口 |
+| `/health` | GET | 健康检查 |
+| `/graph_parameter` | GET | 获取图参数 |
 
 ---
 
@@ -124,15 +187,7 @@ Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
 
 ## 快速开始
 
-[Guncat-Agent官网](https://guncat-agent.space-z.ai/) 
-
 ### API 接入（Guncat 2.0/2.5 系列）
-
-```
-POST https://yuanqi.tencent.com/openapi/v1/agent/chat/completions
-```
-
-并发限制：10 QPS
 
 ```python
 import requests
@@ -169,11 +224,9 @@ print(response.json()["choices"][0]["message"]["content"])
 | 2.5-lite          | `2055608596077149248` |
 | 2.0-flash         | `2037888361351429632` |
 
-> AppKey 请在智能体调试页面 → 应用发布 → API管理 中获取，用于 Bearer 鉴权。
-
 ### API 接入（Guncat 2.5-Pro）
 
-```
+```python
 import requests
 
 url = "https://b5k862mms8.coze.site/stream_run"
@@ -224,24 +277,6 @@ for line in response.iter_lines():
 MIT License
 
 Copyright (c) 2026 Zhu Bowen
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 ---
 
