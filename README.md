@@ -8,13 +8,14 @@
 
 ## 简介
 
-Guncat 是新一代 AI 智能体框架，包含两条平行的产品线：
+Guncat 是新一代 AI 智能体框架，包含通用智能体（2.0/2.5/2.5-Pro）与面向准确信息检索的垂直智能体（Srch 系列）：
 
 | 产品线                | 驱动方式        | 平台                  | 基座模型                             | 工具数量    | 开源情况     |
 | ------------------ | ----------- | ------------------- | -------------------------------- | ------- | -------- |
-| **Guncat 2.0 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)                     | Agent集群 | prompt开源 |
-| **Guncat 2.5 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)                     | 基础工具    | prompt开源 |
+| **Guncat 2.0 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)/混元preview 3.0       | Agent集群 | prompt开源 |
+| **Guncat 2.5 系列**  | Prompt 驱动   | 腾讯元器                | GLM-5 (200k)/混元preview 3.0       | 基础工具    | prompt开源 |
 | **Guncat 2.5-Pro** | Python 代码驱动 | python可移植，服务部署在Coze | API调用（Coze默认doubao-seed-2.0-Pro） | **60+** | 全项目开源    |
+| **Guncat Srch 系列** | Prompt 驱动   | 智谱清言/腾讯元器           | GLM-4.7 / 混元preview 3.0          | 联网搜索    | prompt开源 |
 
 ---
 
@@ -44,6 +45,10 @@ Guncat-Agent/
 │   ├── pyproject.toml             # 依赖配置
 │   ├── README.md
 │   └── uv.lock
+├── Guncat Srch-Law/                # 法律检索智能体
+│   └── Guncat Srch-Law V1.0-prompt.md
+├── Guncat Srch-Research/           # 研究检索智能体
+│   └── Guncat Srch-Research-prompt.md
 ├── LICENSE
 └── README.md
 ```
@@ -117,14 +122,14 @@ Guncat-Agent/
 
 ### 工具生态
 
-| 领域   | 工具数量 | 工具列表 |
-| ---- | ---- | ---- |
-| 图片处理 | 9    | generate_image, image_understanding, extract_text_from_image, analyze_chart, compare_images, detect_objects, remove_watermark, enhance_image, style_transfer |
+| 领域   | 工具数量 | 工具列表                                                                                                                                                                                                   |
+| ---- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 图片处理 | 9    | generate_image, image_understanding, extract_text_from_image, analyze_chart, compare_images, detect_objects, remove_watermark, enhance_image, style_transfer                                           |
 | 视频处理 | 11   | generate_video, trim_video, concat_videos, extract_key_frames, extract_frames_by_interval, extract_audio, add_subtitles, auto_subtitle, analyze_video, extract_video_frames_count, combine_video_audio |
-| 网页内容 | 8    | fetch_webpage, extract_text_from_url, extract_images_from_url, extract_links_from_url, analyze_article, convert_url_to_markdown, summarize_article, compare_articles |
-| 文档处理 | 11   | create_pdf, create_docx, create_pptx, create_excel, translate_text, summarize_document, qa_document, extract_table_from_document, create_report, convert_document_format, proofread_document |
-| 搜索服务 | 9    | web_search, web_search_with_ai_summary, image_search, search_news, academic_search, verify_information, get_knowledge_answer, compare_products, get_trending_topics |
-| 代码执行 | 12   | execute_python_code, calculate, generate_chart, parse_json, format_json, convert_data_format, generate_mindmap, analyze_data, generate_code, debug_code, explain_code, validate_json_schema |
+| 网页内容 | 8    | fetch_webpage, extract_text_from_url, extract_images_from_url, extract_links_from_url, analyze_article, convert_url_to_markdown, summarize_article, compare_articles                                   |
+| 文档处理 | 11   | create_pdf, create_docx, create_pptx, create_excel, translate_text, summarize_document, qa_document, extract_table_from_document, create_report, convert_document_format, proofread_document           |
+| 搜索服务 | 9    | web_search, web_search_with_ai_summary, image_search, search_news, academic_search, verify_information, get_knowledge_answer, compare_products, get_trending_topics                                    |
+| 代码执行 | 12   | execute_python_code, calculate, generate_chart, parse_json, format_json, convert_data_format, generate_mindmap, analyze_data, generate_code, debug_code, explain_code, validate_json_schema            |
 
 ### 核心升级
 
@@ -154,15 +159,71 @@ bash scripts/http_run.sh -m http -p 5000
 
 ### API 接口
 
-| 接口 | 方法 | 描述 |
-| ---- | ---- | ---- |
-| `/run` | POST | 同步执行工作流 |
-| `/stream_run` | POST | 流式执行工作流（SSE） |
-| `/cancel/{run_id}` | POST | 取消指定任务 |
-| `/node_run/{node_id}` | POST | 运行指定节点 |
-| `/v1/chat/completions` | POST | OpenAI 兼容接口 |
-| `/health` | GET | 健康检查 |
-| `/graph_parameter` | GET | 获取图参数 |
+| 接口                     | 方法   | 描述           |
+| ---------------------- | ---- | ------------ |
+| `/run`                 | POST | 同步执行工作流      |
+| `/stream_run`          | POST | 流式执行工作流（SSE） |
+| `/cancel/{run_id}`     | POST | 取消指定任务       |
+| `/node_run/{node_id}`  | POST | 运行指定节点       |
+| `/v1/chat/completions` | POST | OpenAI 兼容接口  |
+| `/health`              | GET  | 健康检查         |
+| `/graph_parameter`     | GET  | 获取图参数        |
+
+---
+
+## Guncat Srch 系列 - 准确信息检索智能体
+
+区别于 Guncat 2.0 / 2.5 / 2.5-Pro 等通用智能体，**Guncat Srch 系列**专为实现**准确、可溯源的信息检索**而生，通过别出心裁的"强制多轮检索 + 多源交叉验证 + 时效性铁律"机制，从源头大幅降低大模型幻觉问题。
+
+基于 Prompt 驱动，运行于腾讯元器平台，搭载 GLM-5 (200k) 基座模型，提供两个垂直领域的检索专家版本。
+
+### 版本矩阵
+
+| 版本                            | 定位       | 专精领域                          | 检索轮次         | 输出形态     |
+| ----------------------------- | -------- | ----------------------------- | ------------ | -------- |
+| **Guncat Srch-Law V1.0**      | 国企法律分析专家 | 国有企业法律事务、商事/行政/刑事交叉案件、国资监管合规  | 强制 6 轮串行检索   | 结构化法律意见书 |
+| **Guncat Srch-Research V1.0** | 多轮验证研究专家 | 跨领域信息检索、多源交叉验证、复杂概念辨析、趋势与风险评估 | 强制 4-6 轮搜索验证 | 结构化研究报告  |
+
+### 核心反幻觉机制
+
+Guncat Srch 系列通过以下"别出心裁"的设计，从源头大幅减少幻觉：
+
+- **强制多轮串行检索**：每次分析必须调用搜索工具执行多轮（Law 强制 6 轮，Research 至少 4-6 轮）按优先级排列的检索，覆盖权威来源、多视角交叉验证、数据验证、时效性校验等环节，杜绝"无检索即作答"
+- **时效性铁律**：严禁引用已废止 / 已修订 / 已过时 / 来源不明的信息；每条引用必须标注法律名称+条款序号+最新修订日期（Law）或来源名称+发布时间（Research）
+- **禁止臆断原则**：对不确定的问题必须明确标注"需进一步核实"并说明核实方向；Law 版本严禁编造案例，若无相关案例不得虚构
+- **多源交叉验证矩阵**：Research 版本强制构建多源验证矩阵，将矛盾信息显性化，基于证据质量和逻辑一致性判断采信
+- **权威来源优先**：优先选取置信度高的来源（政府网站、官媒、学术机构、权威媒体、官方公告、学术文献 DOI 等）
+- **深度分析强制链**：6 条推理链强制执行，严禁以"篇幅限制"为由跳过任何深度分析步骤
+
+### 核心能力
+
+**Guncat Srch-Law（国企法律分析专家）**
+
+- 深度解析复杂商事、行政及刑事交叉案件
+- 精准适用最新法律法规、司法解释及国资监管规定
+- 识别国企特殊法律风险（国资监管、合规、反腐败、三重一大等）
+- 法律概念精细化辨析（法定概念 vs 约定概念）
+- 合同体系化解释方法论（体系 / 目的 / 文义 / 历史 / 诚信解释）
+- 法理深度分析工具箱（整体对价理论、不当得利理论、权利义务一致性、受益分析法等）
+- 实务操作精细化（保全措施、跨境执行、证据链构建）
+
+**Guncat Srch-Research（多轮验证研究专家）**
+
+- 跨领域信息检索与多源交叉验证
+- 复杂概念辨析与术语精准定义
+- 多维度信息整合与逻辑推演
+- 时效性校验与信息置信度评估
+- 分析工具箱（整体关联理论、利益相关方分析、因果链分析、反事实推演、基准线对比、矛盾识别法等）
+- 结构化研究报告生成（含检索轮次记录、交叉验证矩阵、风险识别表）
+
+### 工作流
+
+两个版本共享四阶段工作流，在检索轮次和分析维度上各有侧重：
+
+1. **信息澄清与背景确认**：确认基本事实、主体、诉求，提取关键术语建立"术语对照表"备用
+2. **实时多轮检索 / 验证（强制）**：按优先级串行执行多轮检索，覆盖最新法规 / 事实、权威来源、多视角交叉、数据验证、时效性校验、细节补充
+3. **复杂推理分析（强制）**：6 条推理链执行深度分析（术语辨析 → 体系化解释 → 特殊规则适用 → 深度分析 → 风险推演 → 建议与实务操作）
+4. **输出结构化报告**：法律意见书 / 研究报告，含术语辨析表、来源验证矩阵、深度分析表、风险识别表、建议与实务操作
 
 ---
 
@@ -173,7 +234,7 @@ bash scripts/http_run.sh -m http -p 5000
 | 架构               | Python/LangGraph                | Prompt 驱动    | Prompt 驱动         | Prompt 驱动    | Prompt 驱动    |
 | 基座模型             | API调用，Coze提供doubao-seed-2.0-Pro | GLM-5 (200k) | GLM-5 (200k)      | GLM-5 (200k) | GLM-5 (200k) |
 | 服务平台             | Coze                            | 腾讯元器         | 腾讯元器              | 腾讯元器         | 腾讯元器         |
-| 深度思考             | ✅                               | ✅            | ✅                 | —            | —            |
+| 深度思考             | ✅   | ✅            | ✅                 | —            | —            |
 | 工具数量             | 60+                             | 基础工具         | 基础工具              | 基础工具         | 基础+高级        |
 | 图片处理             | 9 个工具                           | 图片理解         | 图片理解              | 图片理解         | 理解+生成        |
 | 视频处理             | 11 个工具                          | —            | —                 | —            | 剪辑+处理        |
@@ -260,8 +321,9 @@ for line in response.iter_lines():
 
 - **Guncat 2.5 系列**：Prompt 驱动，运行于腾讯元器平台。引入 Sequential Thinking 结构化思维链，要求多次回溯、更细致的任务拆解，大幅提高多轮工具调用的稳定性和连续性。
 - **Guncat 2.5-Pro**：Python 代码 + LangChain/LangGraph 驱动，服务部署于 Coze 平台。支持复杂工作流编排、状态管理和多 Agent 协作，工具调用和 Agent 逻辑由代码直接控制。
+- **Guncat Srch 系列**：Prompt 驱动，运行于腾讯元器平台。通过强制多轮串行检索、多源交叉验证、时效性铁律和禁止臆断等机制，从源头大幅降低信息检索场景下的大模型幻觉问题，专注法律与研究两个垂直领域。
 
-两条产品线在技术架构、底层模型和运行平台上**完全隔离**，互为补充。
+通用智能体（2.5 / 2.5-Pro）与垂直检索智能体（Srch 系列）在定位上互为补充：前者追求全能与复杂任务协同，后者追求准确与可溯源。
 
 ---
 
@@ -285,5 +347,3 @@ Copyright (c) 2026 Zhu Bowen
 📧 bowen_zbw@sjtu.edu.cn
 
 🌐 [guncat-agent.space-z.ai](https://guncat-agent.space-z.ai)
-
-
